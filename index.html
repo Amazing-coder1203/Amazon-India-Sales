@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Amazon India Sales & Fashion Analytics Dashboard | Data Analytics Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amazon+Ember:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Amazon Ember', 'Inter', sans-serif;
+            background: #ffffff;
+            color: #232F3E;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Light floating particles background */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: #FF9900;
+            border-radius: 50%;
+            animation: float 12s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg) scale(1); 
+                opacity: 0.3;
+            }
+            50% { 
+                transform: translateY(-40px) rotate(180deg) scale(1.2); 
+                opacity: 0.7;
+            }
+        }
+
+        /* Navigation Header */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 2px solid #FF9900;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-brand {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #232F3E;
+            text-decoration: none;
+            letter-spacing: -0.8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-brand i {
+            color: #FF9900;
+            font-size: 1.8rem;
+        }
+
+        .nav-brand:hover {
+            color: #FF9900;
+            transform: scale(1.05);
+            transition: all 0.3s ease;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #232F3E;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        .nav-links a:hover {
+            color: #FF9900;
+            background: rgba(255, 153, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background: #FF9900;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after {
+            width: 80%;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #232F3E;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: rgba(255, 153, 0, 0.1);
+            color: #FF9900;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 2rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><path d="M200,300 Q300,200 400,300 T600,300 T800,300 T1000,300 L1000,400 Q800,350 600,400 T200,400 Z" fill="%23FF9900" opacity="0.03"/></svg>');
+            animation: wave 8s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(-20px) translateY(-10px); }
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #FF9900, #FFB84D);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #232F3E;
+            letter-spacing: -1px;
+            animation: slideInUp 1s ease-out;
+            background: linear-gradient(45deg, #232F3E, #FF9900);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero h2 {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            font-weight: 400;
+            color: #666666;
+            margin-bottom: 3rem;
+            animation: slideInUp 1s ease-out 0.2s both;
+            line-height: 1.4;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 4rem;
+            animation: slideInUp 1s ease-out 0.4s both;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            border: 2px solid rgba(255, 153, 0, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #FF9900, #FFB84D);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 153, 0, 0.2);
+            border-color: #FF9900;
+        }
+
+        .stat-number {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 700;
+            color: #FF9900;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            color: #232F3E;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-sublabel {
+            font-size: clamp(0.7rem, 2vw, 0.9rem);
+            color: #666666;
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #232F3E;
+            letter-spacing: -1px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, #FF9900, #FFB84D);
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #666666;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            margin-bottom: 4rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Data Columns Section */
+        .data-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 4rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 153, 0, 0.2);
+        }
+
+        .columns-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .columns-table {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 153, 0, 0.3);
+        }
+
+        .table-header {
+            background: linear-gradient(45deg, #FF9900, #FFB84D);
+            color: white;
+            padding: 1.5rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .table-content {
+            padding: 2rem;
+        }
+
+        .columns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .column-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 153, 0, 0.2);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #232F3E;
+        }
+
+        .column-item:hover {
+            background: rgba(255, 153, 0, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.2);
+        }
+
+        /* Dashboard Section */
+        .dashboard-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 3rem;
+            border: 1px solid rgba(255, 153, 0, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 4rem;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-header h2 {
+            font-size: clamp(2rem, 6vw, 2.8rem);
+            color: #232F3E;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .dashboard-header p {
+            color: #666666;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            min-height: 600px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 153, 0, 0.3);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+        }
+
+        .dashboard-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #666666;
+            z-index: 10;
+        }
+
+        .dashboard-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #FF9900;
+            opacity: 0.7;
+        }
+
+        .dashboard-placeholder h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #232F3E;
+        }
+
+        .dashboard-placeholder p {
+            font-size: 1rem;
+            color: #666666;
+        }
+
+        /* PDF Fallback Section */
+        .pdf-fallback-section {
+            margin-top: 3rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 153, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .pdf-header h3 {
+            color: #232F3E;
+            font-size: clamp(1.3rem, 5vw, 1.8rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .pdf-header h3 i {
+            color: #FF9900;
+            font-size: clamp(1.5rem, 6vw, 2rem);
+        }
+
+        .pdf-header p {
+            color: #666666;
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
+            line-height: 1.5;
+        }
+
+        .pdf-container {
+            position: relative;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 153, 0, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            min-height: 500px;
+        }
+
+        .pdf-container iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .pdf-note {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            border-left: 4px solid #FF9900;
+            border: 1px solid rgba(255, 153, 0, 0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .pdf-note p {
+            color: #666666;
+            font-size: clamp(0.8rem, 3vw, 1rem);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .pdf-note i {
+            color: #FF9900;
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .pdf-download-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #FF9900, #FFB84D);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            box-shadow: 0 3px 12px rgba(255, 153, 0, 0.3);
+        }
+
+        .pdf-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 153, 0, 0.4);
+        }
+
+        .pdf-download-btn i {
+            margin-right: 0.5rem;
+        }
+
+        /* Features Section */
+        .features-section {
+            background: rgba(248, 249, 250, 0.8);
+            border-radius: 16px;
+            padding: 4rem 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 153, 0, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #FF9900, #FFB84D);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(255, 153, 0, 0.2);
+            border-color: #FF9900;
+        }
+
+        .feature-icon {
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            color: #FF9900;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-title {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #232F3E;
+        }
+
+        .feature-desc {
+            color: #666666;
+            line-height: 1.6;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            border: 2px solid transparent;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #FF9900, #FFB84D);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 153, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #232F3E;
+            border-color: #232F3E;
+        }
+
+        .btn-secondary:hover {
+            background: #232F3E;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        .footer {
+            background: #232F3E;
+            color: #ffffff;
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #FF9900;
+            margin-bottom: 1rem;
+        }
+
+        .footer p {
+            color: #cccccc;
+            margin-bottom: 1rem;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #FF9900;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .social-links a {
+            color: #FF9900;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 50%;
+            background: rgba(255, 153, 0, 0.1);
+        }
+
+        .social-links a:hover {
+            transform: scale(1.2) rotateY(360deg);
+            color: #ffffff;
+            background: #FF9900;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+                border-top: 2px solid #FF9900;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .hero {
+                padding: 0 1rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .section {
+                padding: 3rem 0;
+            }
+
+            .data-section,
+            .dashboard-section,
+            .features-section {
+                padding: 2rem 1rem;
+            }
+
+            .columns-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .columns-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-container {
+                height: 60vh;
+                min-height: 400px;
+            }
+
+            .pdf-container iframe {
+                height: 400px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .pdf-fallback-section {
+                padding: 1.5rem;
+                margin-top: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .columns-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-brand {
+                font-size: 1.2rem;
+            }
+
+            .pdf-container iframe {
+                height: 350px;
+            }
+        }
+
+        /* Scroll Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF9900;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating Particles Background -->
+    <div class="particles-container" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-brand">
+                <i class="fa-solid fa-chart-line"></i>
+                SK Devane's Portfolio
+            </a>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#data">Data Overview</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <!-- <div class="hero-badge">
+                <i class="fas fa-chart-line"></i>
+                Professional Data Analytics Portfolio
+            </div> -->
+            <h1><i class="fab fa-amazon"></i> Amazon India Sales & Fashion Analytics</h1>
+            <h2>Comprehensive Power BI Dashboard | Advanced Excel Analysis | Business Intelligence</h2>
+            
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <div class="stat-number">128,977</div>
+                    <div class="stat-label">Sale Records</div>
+                    <div class="stat-sublabel">Complete order dataset</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2,413</div>
+                    <div class="stat-label">Fashion Products</div>
+                    <div class="stat-sublabel">Product catalog analysis</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">9</div>
+                    <div class="stat-label">Product Categories</div>
+                    <div class="stat-sublabel">Fashion segments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">19+</div>
+                    <div class="stat-label">Data Columns</div>
+                    <div class="stat-sublabel">Multi-dimensional analysis</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Data Overview Section -->
+        <section id="data" class="section fade-in">
+            <div class="data-section">
+                <h2 class="section-title">Data Structure Overview</h2>
+                <p class="section-subtitle">
+                    Comprehensive analysis of Amazon India's sales and fashion data spanning multiple dimensions including geographic, temporal, and product-specific insights.
+                </p>
+                
+                <div class="columns-container">
+                    <div class="columns-table">
+                        <div class="table-header">
+                            <i class="fas fa-shopping-cart"></i>
+                            Amazon Sale Report Columns
+                        </div>
+                        <div class="table-content">
+                            <div class="columns-grid">
+                                <div class="column-item">Order ID</div>
+                                <div class="column-item">Date</div>
+                                <div class="column-item">Status</div>
+                                <div class="column-item">Fulfilment</div>
+                                <div class="column-item">Sales Channel</div>
+                                <div class="column-item">ship-service-level</div>
+                                <div class="column-item">Style</div>
+                                <div class="column-item">SKU</div>
+                                <div class="column-item">Category</div>
+                                <div class="column-item">Size</div>
+                                <div class="column-item">ASIN</div>
+                                <div class="column-item">Courier Status</div>
+                                <div class="column-item">Qty</div>
+                                <div class="column-item">currency</div>
+                                <div class="column-item">ship-city</div>
+                                <div class="column-item">ship-state</div>
+                                <div class="column-item">ship-postal-code</div>
+                                <div class="column-item">ship-country</div>
+                                <div class="column-item">fulfilled-by</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="columns-table">
+                        <div class="table-header">
+                            <i class="fas fa-tshirt"></i>
+                            Amazon Fashion Data Columns
+                        </div>
+                        <div class="table-content">
+                            <div class="columns-grid">
+                                <div class="column-item">amazon_asin</div>
+                                <div class="column-item">best_seller</div>
+                                <div class="column-item">brand</div>
+                                <div class="column-item">colour</div>
+                                <div class="column-item">delivery_t</div>
+                                <div class="column-item">discount_large</div>
+                                <div class="column-item">left_in_stc</div>
+                                <div class="column-item">no_of_rev</div>
+                                <div class="column-item">description</div>
+                                <div class="column-item">product_c</div>
+                                <div class="column-item">product_n</div>
+                                <div class="column-item">product_u</div>
+                                <div class="column-item">rating</div>
+                                <div class="column-item">sales_price</div>
+                                <div class="column-item">Category</div>
+                                <div class="column-item">seller_name</div>
+                                <div class="column-item">Seller ID</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section fade-in">
+            <div class="dashboard-section">
+                <div class="dashboard-header">
+                    <h2>Interactive Power BI Dashboard</h2>
+                    <p>Explore comprehensive analytics including sales trends, geographic distribution, product performance, and customer insights through our interactive dashboard featuring Amazon's signature design elements.</p>
+                </div>
+                
+                <div class="dashboard-container">
+                    <!-- Replace with your actual Power BI embed link -->
+                    <iframe 
+                        title="Amazon India Sales Dashboard" 
+                        width="100%" 
+                        height="100%"
+                        src="https://app.powerbi.com/reportEmbed?reportId=09b254a9-5947-4947-ba5b-2eabceb98c4f&autoAuth=true&ctid=edc5c3bf-4ab5-4697-84fa-41b44eb08b5e"
+                        allowfullscreen>
+                    </iframe>
+                    
+                    <!-- Placeholder for when iframe is not available -->
+                    <!-- <div class="dashboard-placeholder">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Power BI Dashboard Loading...</h3>
+                        <p>Please replace the iframe src with your actual Power BI dashboard URL</p>
+                        <div class="loading-spinner"></div>
+                    </div> -->
+                </div>
+
+                <!-- PDF Fallback Section -->
+                <div class="pdf-fallback-section">
+                    <div class="pdf-header">
+                        <h3>
+                            <i class="fas fa-question-circle"></i>
+                            Can't see the dashboard? View static PDF below
+                        </h3>
+                        <p>If you're unable to access the interactive Power BI dashboard above, you can view a static version of our comprehensive Amazon India analytics dashboard.</p>
+                    </div>
+                    
+                    <div class="pdf-container">
+                        <iframe 
+                            title="Amazon India Dashboard PDF Preview" 
+                            src=""
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    
+                    <div class="pdf-note">
+                        <p>
+                            <i class="fas fa-info-circle"></i>
+                            This PDF contains static visualizations of our dashboard. For full interactivity and real-time data exploration, please access the live Power BI dashboard above.
+                        </p>
+                        <a href="Dashboard_AmazonSales.pdf" download="Amazon_India_Dashboard.pdf" class="pdf-download-btn">
+                            <i class="fas fa-download"></i>
+                            Download PDF Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="section fade-in">
+            <div class="features-section">
+                <h2 class="section-title">Dashboard Features</h2>
+                <p class="section-subtitle">
+                    Advanced analytics capabilities designed to provide comprehensive insights into Amazon India's sales and fashion data.
+                </p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div class="feature-title">Geographic Analysis</div>
+                        <div class="feature-desc">
+                            Interactive maps showing sales distribution across Indian states and cities, with drill-down capabilities for detailed regional insights.
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="feature-title">Sales Trends</div>
+                        <div class="feature-desc">
+                            Time-series analysis of sales patterns, seasonal trends, and year-over-year growth metrics with dynamic filtering options.
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="feature-title">Product Performance</div>
+                        <div class="feature-desc">
+                            Comprehensive analysis of product categories, SKU performance, and inventory management insights across fashion segments.
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div class="feature-title">Fulfillment Analytics</div>
+                        <div class="feature-desc">
+                            Detailed analysis of order fulfillment, shipping performance, and delivery metrics with courier status tracking.
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="feature-title">Customer Insights</div>
+                        <div class="feature-desc">
+                            Customer behavior analysis, purchase patterns, and demographic insights to drive strategic business decisions.
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="feature-title">Rating Analysis</div>
+                        <div class="feature-desc">
+                            Product rating trends, customer satisfaction metrics, and review analysis for quality improvement insights.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="#dashboard" class="btn btn-primary">
+                        <i class="fas fa-chart-bar"></i>
+                        Explore Dashboard
+                    </a>
+                    <a href="#contact" class="btn btn-secondary">
+                        <i class="fas fa-envelope"></i>
+                        Get in Touch
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fab fa-amazon"></i>
+                Amazon India Analytics
+            </div>
+            
+            <p>Professional data analytics portfolio showcasing advanced Power BI dashboard development and Excel analysis for Amazon India's sales and fashion data.</p>
+            
+            <div class="footer-links">
+                <a href="#home">Home</a>
+                <a href="#data">Data Overview</a>
+                <a href="#dashboard">Dashboard</a>
+                <a href="#features">Features</a>
+            </div>
+            
+            <p>&copy; 2025 Amazon India Dashboard Project. Built with Power BI, Excel, and advanced analytics.</p>
+            
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/your-profile" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://github.com/your-profile" aria-label="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="mailto:your.email@example.com" aria-label="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="https://twitter.com/your-profile" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle functionality
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        mobileMenuToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            const icon = this.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Close mobile menu when clicking on links
+        navLinks.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A') {
+                navLinks.classList.remove('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = window.innerWidth < 768 ? 20 : 40;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+                particle.style.animationDelay = Math.random() * 12 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 6) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Scroll animations
+        function handleScrollAnimations() {
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 100;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // Counter animation for statistics
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent.replace(/[^\d]/g, ''));
+                const increment = target / 100;
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = counter.textContent;
+                        clearInterval(timer);
+                    } else {
+                        if (counter.textContent.includes(',')) {
+                            counter.textContent = Math.floor(current).toLocaleString();
+                        } else {
+                            counter.textContent = Math.floor(current);
+                        }
+                    }
+                }, 30);
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize all functions
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            handleScrollAnimations();
+            setTimeout(animateCounters, 1000);
+        });
+
+        // Handle scroll events
+        window.addEventListener('scroll', handleScrollAnimations);
+
+        // Lazy loading for better performance
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Performance optimization
+        let ticking = false;
+        function updateOnScroll() {
+            handleScrollAnimations();
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(updateOnScroll);
+                ticking = true;
+            }
+        });
+    </script>
+</body>
+</html>
